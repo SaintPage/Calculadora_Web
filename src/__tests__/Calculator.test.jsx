@@ -5,21 +5,15 @@ import Calculator from '../Calculator'
 import '@testing-library/jest-dom'
 
 describe('Calculator Additional Functional Tests (Selectors Fixed)', () => {
-  it('should perform subtraction and show 5 − 8 = -3 as ERROR', async () => {
-    render(<Calculator />)
-    const user = userEvent.setup()
+ it('should perform subtraction and show 5 − 8 = -3 (negative result)', async () => {
+  render(<Calculator />)
+  const user = userEvent.setup()
 
-    // Clic en el botón “5”
     await user.click(screen.getByRole('button', { name: '5' }))
-    // Clic en el botón “−”
     await user.click(screen.getByRole('button', { name: '−' }))
-    // Clic en el botón “8”
     await user.click(screen.getByRole('button', { name: '8' }))
-    // Clic en el botón “=”
     await user.click(screen.getByRole('button', { name: '=' }))
-
-    // Debería mostrar “ERROR” (porque 5 − 8 = -3)
-    expect(screen.getByTestId('display')).toHaveTextContent('ERROR')
+    expect(screen.getByTestId('display')).toHaveTextContent('-3')
   })
 
   it('should perform multiplication and show 7 × 8 = 56', async () => {
@@ -96,9 +90,7 @@ describe('Calculator Additional Functional Tests (Selectors Fixed)', () => {
     await user.click(screen.getByRole('button', { name: '=' }))
     expect(screen.getByTestId('display')).toHaveTextContent('6')
 
-    // Si pulsamos = de nuevo, asumimos que la lógica no repite la última operación,
-    // por lo que el resultado se mantiene “6” (en lugar de 8). Ajusta esta expectativa
-    // si tu calculadora SÍ implementa “press = to repeat last operation”.
+
     await user.click(screen.getByRole('button', { name: '=' }))
     expect(screen.getByTestId('display')).toHaveTextContent('6')
   })

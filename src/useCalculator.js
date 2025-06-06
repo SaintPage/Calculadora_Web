@@ -41,35 +41,55 @@ export default function useCalculator () {
   }
 
   function calculate () {
-    const oldValue = parseFloat(storedResult, 10)
-    const newValue = parseFloat(currentValue, 10)
-    let resultValue = 0
-    switch (currentOperation) {
-      case 'multiply': resultValue = oldValue * newValue; break
-      case 'division': resultValue = oldValue / newValue; break
-      case 'subtract': resultValue = oldValue - newValue; break
-      case 'sum': resultValue = (((oldValue * 1e9) + (newValue * 1e9)) / 1e9); break
-      case 'modulo': if (newValue === 0) {
+  const oldValue = parseFloat(storedResult, 10)
+  const newValue = parseFloat(currentValue, 10)
+  let resultValue = 0
+
+  switch (currentOperation) {
+    case 'multiply': resultValue = oldValue * newValue; break
+    case 'division': resultValue = oldValue / newValue; break
+    case 'subtract': resultValue = oldValue - newValue; break
+    case 'sum': resultValue = (((oldValue * 1e9) + (newValue * 1e9)) / 1e9); break
+    case 'modulo':
+      if (newValue === 0) {
         setCurrentValue('ERROR')
         setStoredResult(null)
         return
-      } resultValue = oldValue % newValue; break
-      default: return
-    }
-    if (resultValue < 0 || resultValue > 999999999) { setCurrentValue('ERROR'); setStoredResult(null); return }
-    let resultStr = resultValue.toString()
-    if (resultStr.length > maxChars) {
-      const intLen = Math.floor(resultValue).toString().length
-      if (intLen > maxChars) { setCurrentValue('ERROR'); setStoredResult(null); return }
-      let maxDec = maxChars - intLen - 1; if (maxDec < 1) maxDec = 1
-      resultValue = resultValue.toFixed(maxDec)
-      resultStr = resultValue.toString()
-      if (resultStr.length > maxChars) resultStr = resultStr.slice(0, maxChars)
-    }
-    setCurrentValue(resultStr)
-    setStoredResult(null)
-    setCurrentOperation(null)
+      }
+      resultValue = oldValue % newValue
+      break
+    default:
+      return
   }
+
+ 
+  if (resultValue > 999999999) {
+    setCurrentValue('ERROR')
+    setStoredResult(null)
+    return
+  }
+
+  let resultStr = resultValue.toString()
+
+  if (resultStr.length > maxChars) {
+    const intLen = Math.floor(resultValue).toString().length
+    if (intLen > maxChars) {
+      setCurrentValue('ERROR')
+      setStoredResult(null)
+      return
+    }
+    let maxDec = maxChars - intLen - 1
+    if (maxDec < 1) maxDec = 1
+    resultValue = resultValue.toFixed(maxDec)
+    resultStr = resultValue.toString()
+    if (resultStr.length > maxChars) resultStr = resultStr.slice(0, maxChars)
+  }
+
+  setCurrentValue(resultStr)
+  setStoredResult(null)
+  setCurrentOperation(null)
+}
+
 
   function clearAll () { setCurrentOperation(null); setStoredResult(null); setCurrentValue('0') }
   function toggleNumber () {
